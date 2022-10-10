@@ -1,0 +1,23 @@
+app:
+  id: basicdoctor      #app.id是连接到配置中心的唯一标示，有这个标示取决于你能够获取到哪些配置，通常写项目名称
+apollo:
+  meta: http://conf5.base.dev.bj1:8088          #apollo.meta是配置中心地址，多个可以逗号分隔
+  cacheDir: /Data/cache/basicdoctor                  #apollo.cacheDir是本地缓存配置的路径，以防配置中心不可用时，可以读本地配置
+  bootstrap:
+    enabled: true                       #apollo.bootstrap.enabled是在bootstrap阶段加载配置
+    namespaces: application,system.public,system.multiclusterjava
+
+#指定使用哪个logback配置文件
+logging:
+  config: classpath:logback-spring-dev.xml
+
+haodf:
+  sentry:    #开发环境没有配置sentry, 需要禁用带入参和返回值的sentry功能
+    processor:
+
+#指定链接某台php和java服务
+dev:
+  service:
+    host: 127.0.0.1
+    java:
+      host: 127.0.0.1:8000

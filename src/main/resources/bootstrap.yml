@@ -1,0 +1,106 @@
+server:
+  port: ${server.port}
+  tomcat:
+    basedir: /Data/logs/tomcat_base/
+    accesslog:
+      enabled: true
+      pattern: "%h %t %r %s %b %T"
+
+spring:
+  profiles:
+    active: dev
+  application:
+    name: MysqlSyncMq${haodf.version:}
+  
+  datasource:
+    druid:
+      master:
+        url: ${haodf.mysql.master.url}
+        username: ${haodf.mysql.master.username}
+        password: ${haodf.mysql.password}
+        initial-size: ${haodf.mysql.initial-size}
+        max-active: ${haodf.mysql.max-active}
+        min-idle: ${haodf.mysql.min-idle}
+      slaves:
+        count: ${haodf.mysql.slave.count}
+        slave1:
+          url: ${haodf.mysql.slave1.url}
+          username: ${haodf.mysql.slave.username}
+          password: ${haodf.mysql.password}
+          initial-size: ${haodf.mysql.initial-size}
+          max-active: ${haodf.mysql.max-active}
+          min-idle: ${haodf.mysql.min-idle}
+        slave2:
+          url: ${haodf.mysql.slave2.url:${haodf.mysql.slave1.url}}
+          username: ${haodf.mysql.slave.username}
+          password: ${haodf.mysql.password}
+          initial-size: ${haodf.mysql.initial-size}
+          max-active: ${haodf.mysql.max-active}
+          min-idle: ${haodf.mysql.min-idle}
+
+haodf:
+  rabbitmq:
+    basicdoctor:
+      addresses: ${global.rabbitmq.address}
+      username: ${global.rabbitmq.username}
+      password: ${global.rabbitmq.password}
+      virtual-host: basicdoctor
+
+  redis:
+    default:
+      model: ${redis.default.model}
+      servers: ${redis.default.servers}
+      password: ${redis.default.password}
+      maxTotal: 10
+      maxIdle: 8
+      minIdle: 0
+
+  sentry:    #是否启用带入参和返回值的sentry功能，不用可忽略
+    processor: stackCapture
+  locallog:
+    level: INFO
+  rpc:    #是否开启允许java远程调用java传入list类型参数
+    supportListParam: true
+
+#eureka地址
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${eureka.zone}
+
+management:
+  # if use spring cloud bus, comment out the following three lines
+  health:
+    rabbit:
+      enabled: false
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+
+#实体缓存版本号，如果不需要可以忽略该配置
+domain:
+  cache:
+    version: 2019-05-10 12:00:03
+
+#配置RabbitMQ消息幂等功能，1为开启，配置其他或者不配置为关闭
+rabbitmq:
+  consumeRedisSwitch: 1
+
+#配置restTemplate远程调用的超时时间，默认read是3000毫秒，connect是3000毫秒
+rest:
+  read:
+    timeout: 3000
+  connect:
+    timeout: 3000
+
+#配置sentinel，限流熔断使用，如果不需要可以忽略该配置
+cloud:
+  sentinel:
+    transport:
+      dashboard: ${haodf.sentinel.dashboard}
+    log:
+      dir: /Data/logs/sentinel
